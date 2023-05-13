@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/jisspala/assingmenmt-ts#readme",
   "dependencies": {
-    "csv-parse": "^5.3.10",
+    "csv-parse": "^4.8.8",
     "typescript": "^5.0.4"
   },
   "devDependencies": {
