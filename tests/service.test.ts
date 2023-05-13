@@ -1,14 +1,22 @@
 import { processOrders } from '../service';
 
-describe('processOrders', () => {
-  const filePath = 'dummy.csv';
+let filePath = 'tests/correct_orders.csv';
 
-  test('should return correct result status', async () => {
+afterEach(() => {
+  filePath = 'tests/correct_orders.csv';
+});
+
+describe('processOrders', () => {
+  test('should return correct result status and data', async () => {
+    filePath = 'tests/correct_orders.csv';
     const processedOrders = await processOrders(filePath);
     expect(processedOrders.success).toBe(true);
-  });
-  test('should return correct processed orders result', async () => {
-    const processedOrders = await processOrders(filePath);
     expect(processedOrders.data.length).toBeGreaterThan(0);
+  });
+  test('should return error message and status when order file is not exists', async () => {
+    filePath = 'nofile';
+    const processedOrders = await processOrders(filePath);
+    expect(processedOrders.success).toBe(false);
+    expect(processedOrders.message).toBe('error in orderFile file reading');
   });
 });

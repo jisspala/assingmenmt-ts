@@ -35,7 +35,7 @@ const calculateOrder = (order) => {
   // Adding the purchased organs to the result object
   result[organ] = purchased;
 
-  // Add the bonus organs to the result object
+  // Adding the bonus organs to the result object
   if (bonuseCounts > 0 && organ in promotionScheme) {
     const bonusOrgans = promotionScheme[organ].bonus;
 
