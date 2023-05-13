@@ -36,16 +36,17 @@ export const validateOrders = (orders: Order[]): boolean => {
     const cash = Number(order.cash);
     const price = Number(order.price);
     const bonusRatio = Number(order.bonus_ratio);
-    if (!organ || cash <= 0 || price <= 0 || bonusRatio < 1) {
-      console.log(`Invalid order : ${JSON.stringify(order)}`);
-
-      return false;
-    }
     if (isNaN(cash) || isNaN(price) || isNaN(bonusRatio)) {
       console.log(`Invalid order : ${JSON.stringify(order)}`);
 
       return false;
     }
+    if (!organ || cash <= 0 || price <= 0 || bonusRatio < 1) {
+      console.log(`Invalid order : ${JSON.stringify(order)}`);
+
+      return false;
+    }
+
     return true;
   }
 };

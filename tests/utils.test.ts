@@ -32,12 +32,25 @@ describe('validate order with validateOrders', () => {
     const result = await validateOrders(validOrders);
     expect(result).toBe(true);
   });
+
   test('should return false status for invalid order', async () => {
     const validOrders = [];
     validOrders.push({
       organ: 'liver',
       cash: '10',
       price: '10',
+      bonus_ratio: '0',
+    });
+    const result = await validateOrders(validOrders);
+    expect(result).toBe(false);
+  });
+
+  test('should return false status for invalid price', async () => {
+    const validOrders = [];
+    validOrders.push({
+      organ: 'liver',
+      cash: '10',
+      price: 'pp',
       bonus_ratio: '0',
     });
     const result = await validateOrders(validOrders);

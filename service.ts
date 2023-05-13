@@ -1,4 +1,4 @@
-import { readCSV } from './utils';
+import { readCSV, validateOrders } from './utils';
 import { availableOrgans, promotionScheme } from './config';
 
 interface ProcessedResult {
@@ -55,19 +55,27 @@ export const processOrders = async (
   const csvResult = await readCSV(orderFile);
   if (csvResult.success) {
     const finalResults: string[][] = [];
+    const isValidOrders = validateOrders(csvResult.data);
 
-    for (const order of csvResult.data) {
-      // Calculating and applying the bonus
-      const calculatedResult = calculateOrder(order);
-      //Formating the w.r.t. output
-      const formatedResult: string[] = formatOrder(calculatedResult);
-      finalResults.push(formatedResult);
+    if (isValidOrders) {
+      for (const order of csvResult.data) {
+        // Calculating and applying the bonus
+        const calculatedResult = calculateOrder(order);
+        //Formating the w.r.t. output
+        const formatedResult: string[] = formatOrder(calculatedResult);
+        finalResults.push(formatedResult);
+      }
+
+      processedResult = {
+        success: true,
+        data: finalResults,
+      };
+    } else {
+      processedResult = {
+        success: false,
+        message: 'orders are not valid',
+      };
     }
-
-    processedResult = {
-      success: true,
-      data: finalResults,
-    };
   } else {
     processedResult = {
       success: false,
