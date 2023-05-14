@@ -1,4 +1,5 @@
 import { readCSV, validateOrders } from '../utils';
+import { Order, Result } from '../utils/interfaces';
 
 let filePath = 'tests/test_assets/correct_orders.csv';
 
@@ -9,20 +10,20 @@ afterEach(() => {
 describe('read csv file data with readCSV', () => {
   test('should return parsed csv data with correct status', async () => {
     filePath = 'tests/test_assets/correct_orders.csv';
-    const result = await readCSV(filePath);
+    const result: Result = await readCSV(filePath);
     expect(result.success).toBe(true);
-    expect(result.data.length).toBeGreaterThan(0);
+    expect(result.data?.length).toBeGreaterThan(0);
   });
   test('should return unsuccessful status for non-exist csv file', async () => {
     filePath = 'nofile';
-    const processedOrders = await readCSV(filePath);
-    expect(processedOrders.success).toBe(false);
+    const result: Result = await readCSV(filePath);
+    expect(result.success).toBe(false);
   });
 });
 
 describe('validate order with validateOrders', () => {
   test('should return true status for valid order', async () => {
-    const validOrders = [];
+    const validOrders: Order[] = [];
     validOrders.push({
       organ: 'liver',
       cash: '10',
@@ -34,7 +35,7 @@ describe('validate order with validateOrders', () => {
   });
 
   test('should return false status for invalid order', async () => {
-    const validOrders = [];
+    const validOrders: Order[] = [];
     validOrders.push({
       organ: 'liver',
       cash: '10',
@@ -46,7 +47,7 @@ describe('validate order with validateOrders', () => {
   });
 
   test('should return false status for invalid price', async () => {
-    const validOrders = [];
+    const validOrders: Order[] = [];
     validOrders.push({
       organ: 'liver',
       cash: '10',

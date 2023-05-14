@@ -1,15 +1,9 @@
 // Read the orders from the CSV file
 import fs from 'fs';
 import parse from 'csv-parse/lib/sync';
+import { Order } from './interfaces';
 
-interface Order {
-  organ: string;
-  cash: number;
-  price: number;
-  bonus_ratio: number;
-}
-
-export async function readCSV(filename) {
+export async function readCSV(filename: string) {
   let data;
   let result;
   try {
@@ -22,7 +16,7 @@ export async function readCSV(filename) {
       data: data,
     };
   } catch (error) {
-    console.error('error in reading csv:', JSON.stringify(error?.message));
+    console.error('error in reading csv:', JSON.stringify(error));
     result = {
       success: false,
     };
@@ -31,22 +25,24 @@ export async function readCSV(filename) {
 }
 
 export const validateOrders = (orders: Order[]): boolean => {
-  for (const order of orders) {
-    const organ = order.organ;
-    const cash = Number(order.cash);
-    const price = Number(order.price);
-    const bonusRatio = Number(order.bonus_ratio);
-    if (isNaN(cash) || isNaN(price) || isNaN(bonusRatio)) {
-      console.log(`Invalid order : ${JSON.stringify(order)}`);
+  if (orders.length > 0) {
+    for (const order of orders) {
+      const organ = order.organ;
+      const cash = Number(order.cash);
+      const price = Number(order.price);
+      const bonusRatio = Number(order.bonus_ratio);
+      if (isNaN(cash) || isNaN(price) || isNaN(bonusRatio)) {
+        console.log(`Invalid order : ${JSON.stringify(order)}`);
+        return false;
+      }
+      if (!organ || cash <= 0 || price <= 0 || bonusRatio < 1) {
+        console.log(`Invalid order : ${JSON.stringify(order)}`);
 
-      return false;
+        return false;
+      }
+
+      return true;
     }
-    if (!organ || cash <= 0 || price <= 0 || bonusRatio < 1) {
-      console.log(`Invalid order : ${JSON.stringify(order)}`);
-
-      return false;
-    }
-
-    return true;
   }
+  return false;
 };

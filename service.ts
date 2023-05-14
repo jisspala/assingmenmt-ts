@@ -1,27 +1,18 @@
 import { readCSV, validateOrders } from './utils';
 import { availableOrgans, promotionScheme } from './config';
+import {
+  ProcessedResult,
+  Order,
+  Result,
+  CalculatedOrder,
+} from './utils/interfaces';
 
-interface ProcessedResult {
-  success: boolean;
-  data?: string[][];
-  message?: string;
-}
-
-const formatOrder = (result): string[] => {
-  const formatedResult: string[] = [];
-
-  for (const [key, value] of Object.entries(result)) {
-    formatedResult.push(`${key}: ${value}`);
-  }
-  return formatedResult;
-};
-
-const calculateOrder = (order) => {
-  const result = {};
+const calculateOrder = (order: Order): CalculatedOrder => {
+  const calculatedOrder: CalculatedOrder = {};
 
   // Preparing result object model
   availableOrgans.map((item) => {
-    result[item] = 0;
+    calculatedOrder[item] = 0;
   });
   const organ = order.organ.toLowerCase();
   const cash = Number(order.cash);
@@ -33,7 +24,7 @@ const calculateOrder = (order) => {
   const bonuseCounts = Math.floor(purchased / bonusRatio);
 
   // Adding the purchased organs to the result object
-  result[organ] = purchased;
+  calculatedOrder[organ] = purchased;
 
   // Adding the bonus organs to the result object
   if (bonuseCounts > 0 && organ in promotionScheme) {
@@ -41,10 +32,18 @@ const calculateOrder = (order) => {
 
     for (const bonusOrgan in bonusOrgans) {
       const bonusAmount = bonuseCounts * bonusOrgans[bonusOrgan];
-      result[bonusOrgan] += bonusAmount;
+      calculatedOrder[bonusOrgan] += bonusAmount;
     }
   }
-  return result;
+  return calculatedOrder;
+};
+const formatOrder = (calculatedOrder: CalculatedOrder): string[] => {
+  const formatedResult: string[] = [];
+
+  for (const [key, value] of Object.entries(calculatedOrder)) {
+    formatedResult.push(`${key}: ${value}`);
+  }
+  return formatedResult;
 };
 
 export const processOrders = async (
@@ -52,17 +51,17 @@ export const processOrders = async (
 ): Promise<ProcessedResult> => {
   let processedResult: ProcessedResult;
 
-  const csvResult = await readCSV(orderFile);
-  if (csvResult.success) {
+  const csvResult: Result = await readCSV(orderFile);
+  if (csvResult.success && csvResult.data) {
     const finalResults: string[][] = [];
     const isValidOrders = validateOrders(csvResult.data);
 
     if (isValidOrders) {
       for (const order of csvResult.data) {
         // Calculating and applying the bonus
-        const calculatedResult = calculateOrder(order);
-        //Formating the w.r.t. output
-        const formatedResult: string[] = formatOrder(calculatedResult);
+        const calculatedOrder: CalculatedOrder = calculateOrder(order);
+        //Formating the order w.r.t. output
+        const formatedResult: string[] = formatOrder(calculatedOrder);
         finalResults.push(formatedResult);
       }
 
