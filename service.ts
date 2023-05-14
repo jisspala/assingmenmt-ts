@@ -1,11 +1,12 @@
-import { readCSV, validateOrders } from './utils';
 import { availableOrgans, promotionScheme } from './config';
+import { readCSV, validateOrders } from './utils';
 import {
   ProcessedResult,
   Order,
   Result,
   CalculatedOrder,
 } from './utils/interfaces';
+import constants from './utils/stringConstants';
 
 const calculateOrder = (order: Order): CalculatedOrder => {
   const calculatedOrder: CalculatedOrder = {};
@@ -14,6 +15,7 @@ const calculateOrder = (order: Order): CalculatedOrder => {
   availableOrgans.map((item) => {
     calculatedOrder[item] = 0;
   });
+
   const organ = order.organ.toLowerCase();
   const cash = Number(order.cash);
   const price = Number(order.price);
@@ -37,13 +39,14 @@ const calculateOrder = (order: Order): CalculatedOrder => {
   }
   return calculatedOrder;
 };
+
 const formatOrder = (calculatedOrder: CalculatedOrder): string[] => {
-  const formatedResult: string[] = [];
+  const formattedResult: string[] = [];
 
   for (const [key, value] of Object.entries(calculatedOrder)) {
-    formatedResult.push(`${key}: ${value}`);
+    formattedResult.push(`${key}: ${value}`);
   }
-  return formatedResult;
+  return formattedResult;
 };
 
 export const processOrders = async (
@@ -60,9 +63,10 @@ export const processOrders = async (
       for (const order of csvResult.data) {
         // Calculating and applying the bonus
         const calculatedOrder: CalculatedOrder = calculateOrder(order);
-        //Formating the order w.r.t. output
-        const formatedResult: string[] = formatOrder(calculatedOrder);
-        finalResults.push(formatedResult);
+        //Formatting the order w.r.t. output
+        const formattedResult: string[] = formatOrder(calculatedOrder);
+
+        finalResults.push(formattedResult);
       }
 
       processedResult = {
@@ -72,13 +76,13 @@ export const processOrders = async (
     } else {
       processedResult = {
         success: false,
-        message: 'orders are not valid',
+        message: constants.INVALID_ORDERS,
       };
     }
   } else {
     processedResult = {
       success: false,
-      message: 'error in orderFile file reading',
+      message: constants.INVALID_CSV,
     };
   }
   return processedResult;
