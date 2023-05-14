@@ -1,6 +1,6 @@
 import { processOrders } from './service';
 
-const orderFile = 'input/order.csv';
+const orderFile = process.argv[2] || 'input/order.csv';
 
 async function app() {
   const ProcessedResult = await processOrders(orderFile);

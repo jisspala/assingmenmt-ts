@@ -41,24 +41,28 @@ describe('processOrders', () => {
     expect(processedOrders.success).toBe(false);
     expect(processedOrders.message).toBe(constants.INVALID_CSV);
   });
+
   test('should return error message and status when order bonus_ratio is zero', async () => {
     filePath = 'tests/test_assets/orders_zero_bonus_ratio.csv';
     const processedOrders: ProcessedResult = await processOrders(filePath);
     expect(processedOrders.success).toBe(false);
     expect(processedOrders.message).toBe(constants.INVALID_ORDERS);
   });
+
   test('should return error message and status when order price is invalid', async () => {
     filePath = 'tests/test_assets/orders_invalid_price.csv';
     const processedOrders: ProcessedResult = await processOrders(filePath);
     expect(processedOrders.success).toBe(false);
     expect(processedOrders.message).toBe(constants.INVALID_ORDERS);
   });
+
   test('should return error message and status when order price is invalid', async () => {
     filePath = 'tests/test_assets/orders_invalid_price.csv';
     const processedOrders: ProcessedResult = await processOrders(filePath);
     expect(processedOrders.success).toBe(false);
     expect(processedOrders.message).toBe(constants.INVALID_ORDERS);
   });
+
   test('should return error message and status when order file is empty', async () => {
     filePath = 'tests/test_assets/no_data.csv';
     const processedOrders: ProcessedResult = await processOrders(filePath);
